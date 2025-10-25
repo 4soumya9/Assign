@@ -1,0 +1,170 @@
+.mainPage{
+  height: 100vh;
+  background-color: #eaf3f7;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+
+.saveSegBtn{
+  background-color: teal;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Sidebar */
+.sideOverlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+}
+
+.sidePopup{
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0px 10px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.popupHeader{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeBtn{
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.popupBody{
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-right: 5px;
+}
+
+.popupBody input{
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin: 5px 0 10px 0;
+}
+
+.infoTxt{
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+/* Trait legend */
+.traitLegend {
+  display: flex;
+  justify-content: flex-start;
+  gap: 15px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.dot.user {
+  background-color: #00c853; /* green */
+}
+
+.dot.group {
+  background-color: #ff4081; /* pink */
+}
+
+/* Blue box */
+.blueBox{
+  border: 1px solid #a9dbf5;
+  background-color: #f3fbff;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* Schema row */
+.schemaRow{
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.schemaSelect{
+  flex: 1;
+  padding: 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.removeBtn{
+  margin-left: 6px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 9px;
+  cursor: pointer;
+}
+
+/* Footer */
+.popupFooter{
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.saveBtn{
+  background-color: teal;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancelBtn{
+  background-color: #ccc;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
