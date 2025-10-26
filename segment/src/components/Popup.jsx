@@ -1,13 +1,15 @@
 import { useState } from "react";
 import SchemaDropdown from "./SchemaDropdown";
 
-function Popup({ closePopup }) {
-  const [segmentName, setSegmentName] = useState("");
-  const [schemas, setSchemas] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("");
+// const WEBHOOK_URL = "https://webhook.site/2be76ee8-ea2b-42e2-a3b2-f7cae73d82df";
 
-  // Now we have both user and group traits
-  const schemaOptions = [
+function Popup({ closePopup }) {
+  const [segName, setSegName] = useState("");
+  const [items, setItems] = useState([]);
+  const [sel, setSel] = useState("");
+
+  // trait types
+  const ALL_OPTIONS = [
     { label: "First Name", value: "first_name", type: "user" },
     { label: "Last Name", value: "last_name", type: "user" },
     { label: "Gender", value: "gender", type: "user" },
@@ -17,71 +19,79 @@ function Popup({ closePopup }) {
     { label: "State", value: "state", type: "group" },
   ];
 
-  function handleAddSchema() {
-    if (selectedOption === "") {
-      alert("Please select a schema first.");
+  function addNew() {
+    if (sel === "") {
+      alert("Please pick something first");
       return;
     }
-    if (schemas.includes(selectedOption)) {
-      alert("Schema already added.");
+    if (items.includes(sel)) {
+      alert("already added");
       return;
     }
-    setSchemas([...schemas, selectedOption]);
-    setSelectedOption("");
+    setItems([...items, sel]);
+    setSel("");
   }
 
-  function handleRemoveSchema(index) {
-    const copy = [...schemas];
-    copy.splice(index, 1);
-    setSchemas(copy);
+  // remove by index
+  function removeAt(i) {
+    const c = [...items];
+    c.splice(i, 1);
+    setItems(c);
   }
 
-  function handleChangeSchema(index, newValue) {
-    const updated = [...schemas];
-    updated[index] = newValue;
-    setSchemas(updated);
+  // edit a selected dropdown in blue box
+  function changeAt(i, newVal) {
+    const c = [...items];
+    c[i] = newVal;
+    setItems(c);
   }
 
-  async function handleSaveSegment() {
-    if (!segmentName.trim()) {
-      alert("Enter segment name");
+  async function saveSeg() {
+    if (!segName.trim()) {
+      alert("Please enter segment name");
       return;
     }
-    if (schemas.length === 0) {
+    if (items.length === 0) {
       alert("Add at least one schema");
       return;
     }
 
-    const dataToSend = {
-      segment_name: segmentName,
-      schema: schemas.map((s) => {
-        const found = schemaOptions.find((o) => o.value === s);
-        return { [s]: found ? found.label : s };
+    const payload = {
+      segment_name: segName,
+      schema: items.map((s) => {
+        const f = ALL_OPTIONS.find((o) => o.value === s);
+        return { [s]: f ? f.label : s };
       }),
     };
+
+    console.log("payload to send ->", payload);
 
     try {
       const res = await fetch("/api", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToSend),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
-        alert("Segment saved successfully!");
+        alert("Saved! ");
+
+        setSegName("");
+        setItems([]);
         closePopup();
       } else {
-        alert("Failed to save segment.");
+        alert("Server responded not OK");
       }
     } catch (err) {
-      console.log(err);
-      alert("Error while saving.");
+      console.log("send error", err);
+      alert("Error sending data (check console).");
     }
   }
 
-  const availableOptions = schemaOptions.filter(
-    (opt) => !schemas.includes(opt.value)
-  );
+  const available = ALL_OPTIONS.filter((o) => !items.includes(o.value));
+
+  // const testVar = null;
+  // console.log("testVar", testVar)
 
   return (
     <>
@@ -90,7 +100,7 @@ function Popup({ closePopup }) {
       <div className="sidePopup">
         <div className="popupHeader">
           <h3>Saving Segment</h3>
-          <button onClick={closePopup} className="closeBtn">
+          <button className="closeBtn" onClick={closePopup}>
             x
           </button>
         </div>
@@ -99,18 +109,17 @@ function Popup({ closePopup }) {
           <label>Enter the Name of the Segment</label>
           <input
             type="text"
+            value={segName}
+            onChange={(e) => setSegName(e.target.value)}
             placeholder="Name of the segment"
-            value={segmentName}
-            onChange={(e) => setSegmentName(e.target.value)}
           />
 
           <p className="infoTxt">
             To save your segment, you need to add the schemas to build the query
           </p>
 
-          {/* Trait Legend */}
-          <div className="traitLegend">
-            <span>
+          <div className="traitLegend" style={{ marginBottom: "8px" }}>
+            <span style={{ marginRight: 12 }}>
               <span className="dot user"></span> User Traits
             </span>
             <span>
@@ -118,53 +127,56 @@ function Popup({ closePopup }) {
             </span>
           </div>
 
-          {/* Blue box */}
           <div className="blueBox">
-            {schemas.map((schema, i) => (
+            {items.map((val, idx) => (
               <SchemaDropdown
-                key={i}
-                value={schema}
-                index={i}
-                onChange={handleChangeSchema}
-                onRemove={handleRemoveSchema}
-                allOptions={schemaOptions}
-                selected={schemas}
+                key={idx}
+                value={val}
+                index={idx}
+                allOptions={ALL_OPTIONS}
+                selected={items}
+                onChange={changeAt}
+                onRemove={removeAt}
               />
             ))}
+
+            {items.length === 0 && (
+              <div style={{ color: "#666", fontSize: 13 }}>
+                No schema added yet
+              </div>
+            )}
           </div>
 
-          {/* Add new schema dropdown */}
-          <div style={{ marginTop: "10px" }}>
+          <div style={{ marginTop: 12 }}>
             <select
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value)}
-              style={{ padding: "6px", borderRadius: "5px", width: "100%" }}
+              value={sel}
+              onChange={(e) => setSel(e.target.value)}
+              style={{ padding: 6, borderRadius: 5, width: "100%" }}
             >
               <option value="">Add schema to segment</option>
-              {availableOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
+              {available.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
                 </option>
               ))}
             </select>
 
             <p
+              onClick={addNew}
               style={{
                 color: "teal",
                 cursor: "pointer",
-                fontSize: "14px",
-                marginTop: "5px",
+                fontSize: 14,
+                marginTop: 6,
               }}
-              onClick={handleAddSchema}
             >
               + Add new schema
             </p>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="popupFooter">
-          <button className="saveBtn" onClick={handleSaveSegment}>
+          <button className="saveBtn" onClick={saveSeg}>
             Save the Segment
           </button>
           <button className="cancelBtn" onClick={closePopup}>

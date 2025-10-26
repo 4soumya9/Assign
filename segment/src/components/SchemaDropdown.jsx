@@ -1,32 +1,42 @@
-function SchemaDropdown({value, index, onChange, onRemove, allOptions, selected}) {
+function SchemaDropdown({
+  value,
+  index,
+  allOptions,
+  selected,
+  onChange,
+  onRemove,
+}) {
+  const obj = allOptions.find((o) => o.value === value);
+  const dotType = obj?.type === "user" ? "dot user" : "dot group";
 
-  const filtered = allOptions.filter(
-    opt => opt.value===value || !selected.includes(opt.value)
-  )
+  // only show options not yet selected
+  const opts = allOptions.filter(
+    (o) => o.value === value || !selected.includes(o.value)
+  );
 
-  const selectedObj = allOptions.find(opt => opt.value === value)
-  const colorClass = selectedObj?.type === "user" ? "dot user" : "dot group"
+  console.log("render DropItem", value);
 
   return (
     <div className="schemaRow">
-      <span className={colorClass}></span>
-      <select 
-        value={value}
-        onChange={(e)=>onChange(index, e.target.value)}
+      <span className={dotType} style={{ marginRight: 8 }}></span>
+
+      <select
         className="schemaSelect"
+        value={value}
+        onChange={(e) => onChange(index, e.target.value)}
       >
-        {filtered.map(opt=>(
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        {opts.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
         ))}
       </select>
-      <button 
-        onClick={()=>onRemove(index)} 
-        className="removeBtn"
-      >
+
+      <button className="removeBtn" onClick={() => onRemove(index)}>
         -
       </button>
     </div>
-  )
+  );
 }
 
-export default SchemaDropdown
+export default SchemaDropdown;

@@ -1,22 +1,21 @@
-import { useState } from "react"
-import Popup from "./components/Popup"
-import "./App.css"
+import { useState } from "react";
+import "./App.css";
+import Popup from "./components/Popup";
 
 function App() {
-
-  const [show, setShow] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="mainPage">
       <div className="topBar">
-        <button className="saveSegBtn" onClick={()=>setShow(true)}>Save segment</button>
+        <button className="saveSegBtn" onClick={() => setOpen(true)}>
+          Save segment
+        </button>
       </div>
 
-      {show && (
-        <Popup closePopup={()=>setShow(false)} />
-      )}
+      {open && <Popup closePopup={() => setOpen(false)} />}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
